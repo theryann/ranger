@@ -14,7 +14,8 @@ import (
 var yearsCmd = &cobra.Command{
 	Use:   "years",
 	Short: "order files by year",
-	Long: `creates folder for each found year and sorts files inside`,
+	Long: `creates folder for each found year and sorts files inside.
+Note: only matches filenames between 2000 - 2050`,
 	Run: func(cmd *cobra.Command, args []string) {
 		organize(Years)
 	},
