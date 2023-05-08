@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"os"
 	"path"
@@ -21,7 +22,7 @@ var datePattern *regexp.Regexp = regexp.MustCompile("(200[0-9]|20[1-4][0-9]|2050
 var monthsNames = [12] string {"Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"}
 
 
-func organize(detail Detail) {
+func organizeByDate(detail Detail) {
 	cwd, _ := os.Getwd() // get CWD
 	files, err := os.ReadDir( cwd )
 
@@ -83,8 +84,41 @@ func organize(detail Detail) {
 		os.Rename(oldFilePath, newFilePath)
 
 	}
+}
+
+func organizeByTopic(topics []string) {
+	cwd, _ := os.Getwd() // get CWD
+	files, err := os.ReadDir( cwd )
+
+	if err != nil {
+		fmt.Println("Error while reading directory:", err)
+	}
 
 
+	for _, topic := range topics {
+		for _, file := range files {
+			if file.IsDir() { continue }
+
+			var fileLower  string = strings.ToLower( file.Name() )
+			var topicLower string = strings.ToLower( topic )
+
+			// test if topic occurs in filename
+			if !strings.Contains( fileLower, topicLower ) { continue }
+
+			// create topic directory
+			_, err := os.Stat( path.Join(cwd, topic) )
+			if os.IsNotExist( err ) {
+				os.Mkdir( path.Join(cwd, topic), 0755)
+			}
+
+			// move file
+			var oldfilePath string = path.Join(cwd, file.Name())
+			var newfilePath string = path.Join(cwd, topic, file.Name())
+
+			os.Rename(oldfilePath, newfilePath)
+
+		}
+	}
 
 
 }
