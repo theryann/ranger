@@ -15,20 +15,26 @@ var monthsCmd = &cobra.Command{
 	Long: `creates folder for each each date up to the month and sorts files inside.
 Note: only matches filenames between 2000 - 2050`,
 	Run: func(cmd *cobra.Command, args []string) {
-		organizeByDate(Months, FileName)
+		modTime, _  := cmd.Flags().GetBool("modtime")
+		exifTime, _ := cmd.Flags().GetBool("exif")
+		fileName, _ := cmd.Flags().GetBool("filename")
+
+		if modTime {
+			organizeByDate(Years, ModifiedTime)
+		} else if exifTime {
+			organizeByDate(Years, EXIF)
+		} else if fileName {
+			organizeByDate(Years, FileName)
+		} else {
+			organizeByDate(Years, FileName)
+		}
+
 	},
 }
 
-// monthsModTimeCmd represents the months subcommand to order by modify time
-var monthsModTimeCmd = &cobra.Command{
-	Use:   "modtime",
-	Short: "time source is modified time",
-	Long:  `sortes by month and uses the last modified time of the operating system`,
-	Run: func(cmd *cobra.Command, args []string) {
-		organizeByDate(Months, ModifiedTime)
-	},
-}
 func init() {
 	rootCmd.AddCommand(monthsCmd)
-	monthsCmd.AddCommand(monthsModTimeCmd)
+	monthsCmd.PersistentFlags().BoolP("modtime",  "m" , false, "time source is modified time")
+	monthsCmd.PersistentFlags().BoolP("exif",     "e" , false, "time source is exif data")
+	monthsCmd.PersistentFlags().BoolP("filename", "f" , true,  "time source is filename")
 }

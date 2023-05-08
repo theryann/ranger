@@ -106,8 +106,7 @@ func organizeByDate(detail Detail, source Source) {
 		}
 
 		os.Rename(oldFilePath, newFilePath)
-		// fmt.Println( oldFilePath, newFilePath)
-		file.Clo
+
 
 
 
