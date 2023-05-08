@@ -18,11 +18,18 @@ const (
 	Days
 )
 
+type Source int
+const (
+	FileName  Source = iota
+	EXIF
+	ModifiedTime
+)
+
 var datePattern *regexp.Regexp = regexp.MustCompile("(200[0-9]|20[1-4][0-9]|2050)[-]?(0[1-9]|1[0-2])[-]?(0[1-9]|[12][0-9]|3[01])")
 var monthsNames = [12] string {"Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"}
 
 
-func organizeByDate(detail Detail) {
+func organizeByDate(detail Detail, source Source) {
 	cwd, _ := os.Getwd() // get CWD
 	files, err := os.ReadDir( cwd )
 
@@ -32,10 +39,27 @@ func organizeByDate(detail Detail) {
 
 	for _, file := range files {
 		if file.IsDir() { continue }
-		if !datePattern.MatchString( file.Name() ) { continue }
+
+		// make a string from the source where the date came from
+		var dateSourceString string
+
+		switch source {
+			case FileName:
+				dateSourceString = file.Name()
+			case EXIF:
+				continue
+			case ModifiedTime:
+				fileInfo, err := os.Stat( file.Name() )
+				if err != nil { fmt.Println("Error while getting file Info", err) }
+				dateSourceString = fileInfo.ModTime().String()
+			default: continue
+		}
+
+		// search for date in the provided string that was created from the date source
+		if !datePattern.MatchString( dateSourceString ) { continue }
 
 		// create strings
-		var date []string = datePattern.FindStringSubmatch( file.Name() ) // returns string slice {"2025-03-17", "2025", "03", "17"}
+		var date []string = datePattern.FindStringSubmatch( dateSourceString ) // returns string slice {"2025-03-17", "2025", "03", "17"}
 		year, month, day := date[1], date[2], date[3]
 
 		var yearPath string = path.Join(cwd, year)
@@ -47,7 +71,7 @@ func organizeByDate(detail Detail) {
 		// create year dir
 		_, err := os.Stat(yearPath)
 		if os.IsNotExist( err ) {
-			os.Mkdir( yearPath, 0755) // 0755 are UNIX permissions that dont have an effect on windws
+			os.Mkdir( yearPath, 0755 ) // 0755 are UNIX permissions that dont have an effect on windws
 		}
 
 		// create month dir
@@ -82,6 +106,10 @@ func organizeByDate(detail Detail) {
 		}
 
 		os.Rename(oldFilePath, newFilePath)
+		// fmt.Println( oldFilePath, newFilePath)
+		file.Clo
+
+
 
 	}
 }
