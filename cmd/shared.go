@@ -2,12 +2,14 @@ package cmd
 
 import (
 	"fmt"
+	// "sort"
 	"strings"
 
 	"os"
 	"path"
 	"regexp"
 	"strconv"
+
 	"github.com/rwcarlsen/goexif/exif"
 )
 
@@ -23,6 +25,12 @@ const (
 	FileName  Source = iota
 	EXIF
 	ModifiedTime
+)
+
+type Subject int
+const (
+	EXIFLoc  Subject = iota
+	Name
 )
 
 var datePattern *regexp.Regexp = regexp.MustCompile("(200[0-9]|20[1-4][0-9]|2050)[-]?(0[1-9]|1[0-2])[-]?(0[1-9]|[12][0-9]|3[01])")
@@ -160,6 +168,22 @@ func organizeByTopic(topics []string) {
 
 		}
 	}
+}
 
+func rename(source Source) {
+	// TODO
+
+}
+
+func find(path string, subject Subject) {
+	files, err := os.ReadDir( path )
+
+	if err != nil {fmt.Println("Error while reading directory:", err)}
+
+	for _, file := range files {
+		if file.IsDir() {
+			fmt.Println(file.Name())
+		}
+	}
 
 }
