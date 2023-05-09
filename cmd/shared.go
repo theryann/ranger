@@ -8,10 +8,10 @@ import (
 	"path"
 	"regexp"
 	"strconv"
+	"github.com/rwcarlsen/goexif/exif"
 )
 
 type Detail int
-
 const (
 	Years  Detail = iota
 	Months
@@ -46,12 +46,28 @@ func organizeByDate(detail Detail, source Source) {
 		switch source {
 			case FileName:
 				dateSourceString = file.Name()
+				break
+
 			case EXIF:
-				continue
+				img, err := os.Open( file.Name() )
+				if err != nil { fmt.Println("Error while opening image", err) }
+
+				exifData, err := exif.Decode(img)
+				if err != nil { continue } // error on extracting exif data
+
+				exifTime, err := exifData.DateTime()
+				if err != nil { continue } // error on extracting time data
+				dateSourceString = exifTime.Local().String()
+
+				img.Close()
+				break
+
 			case ModifiedTime:
 				fileInfo, err := os.Stat( file.Name() )
 				if err != nil { fmt.Println("Error while getting file Info", err) }
 				dateSourceString = fileInfo.ModTime().String()
+				break
+
 			default: continue
 		}
 
@@ -106,8 +122,6 @@ func organizeByDate(detail Detail, source Source) {
 		}
 
 		os.Rename(oldFilePath, newFilePath)
-
-
 
 
 	}

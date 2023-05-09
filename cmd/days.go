@@ -20,13 +20,13 @@ Note: only matches filenames between 2000 - 2050`,
 		fileName, _ := cmd.Flags().GetBool("filename")
 
 		if modTime {
-			organizeByDate(Years, ModifiedTime)
+			organizeByDate(Days, ModifiedTime)
 		} else if exifTime {
-			organizeByDate(Years, EXIF)
+			organizeByDate(Days, EXIF)
 		} else if fileName {
-			organizeByDate(Years, FileName)
+			organizeByDate(Days, FileName)
 		} else {
-			organizeByDate(Years, FileName)
+			organizeByDate(Days, FileName)
 		}
 
 	},
