@@ -11,7 +11,7 @@ import (
 // daysCmd represents the days command
 var daysCmd = &cobra.Command{
 	Use:   "days",
-	Short: "order files by day",
+	Short: "directorify files by day",
 	Long: `creates folder for each date up to the day and sorts files inside.
 Note: only matches filenames between 2000 - 2050`,
 	Run: func(cmd *cobra.Command, args []string) {

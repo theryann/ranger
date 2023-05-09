@@ -175,15 +175,44 @@ func rename(source Source) {
 
 }
 
-func find(path string, subject Subject) {
-	files, err := os.ReadDir( path )
+func find(dirPath string, subject Subject, name string) {
+	files, err := os.ReadDir( dirPath )
 
 	if err != nil {fmt.Println("Error while reading directory:", err)}
 
 	for _, file := range files {
 		if file.IsDir() {
-			fmt.Println(file.Name())
+			// search subdirectories
+			find( path.Join(dirPath, file.Name()), subject, name )
+
+		} else {
+			// look for subject
+
+			switch subject {
+				case EXIFLoc:
+					img, err := os.Open( file.Name() )
+					if err != nil { continue }
+
+					exifData, err := exif.Decode(img)
+					if err != nil { continue } // error on extracting exif data
+
+					Lat, Long, err := exifData.LatLong()
+					if err != nil { continue } // error on extracting time data
+					img.Close()
+
+					fmt.Println(file.Name(), Lat, Long)
+
+				case Name:
+					var fileLower string = strings.ToLower( file.Name() )
+					var nameLower string = strings.ToLower( name )
+
+					// test if topic occurs in filename
+					if strings.Contains( fileLower, nameLower ) {
+						fmt.Println(file.Name())
+					}
+
+				default: continue
+			}
 		}
 	}
-
 }

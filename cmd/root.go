@@ -23,6 +23,7 @@ var rootCmd = &cobra.Command{
 |_|  \__,_|_| |_|\__, |\___|_|
                   __/ |
                  |___/
+				 
 Ranger is a commandline tool to organize files in a directory into subdirectories.
 This can happen using different attributes and in varying levels of strictness.`,
 }
