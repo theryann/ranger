@@ -34,6 +34,7 @@ Note: only matches filenames between 2000 - 2050`,
 
 func init() {
 	rootCmd.AddCommand(yearsCmd)
+	yearsCmd.Aliases = []string {"year"}
 	yearsCmd.PersistentFlags().BoolP("modtime",  "m" , false, "time source is modified time")
 	yearsCmd.PersistentFlags().BoolP("exif",     "e" , false, "time source is exif data")
 	yearsCmd.PersistentFlags().BoolP("filename", "f" , true,  "time source is filename")
