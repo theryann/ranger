@@ -58,7 +58,7 @@ func organizeByDate(detail Detail, source Source) {
 
 			case EXIF:
 				img, err := os.Open( file.Name() )
-				if err != nil { fmt.Println("Error while opening image", err) }
+				if err != nil { continue }
 
 				exifData, err := exif.Decode(img)
 				if err != nil { continue } // error on extracting exif data
@@ -213,6 +213,28 @@ func find(dirPath string, subject Subject, name string) {
 
 				default: continue
 			}
+		}
+	}
+}
+
+
+func compile(dirPath string, rootPath string) {
+	files, err := os.ReadDir( dirPath )
+
+	if err != nil {fmt.Println("Error while reading directory:", err)}
+
+	for _, file := range files {
+		if file.IsDir() {
+			// search subdirectories
+			compile( path.Join(dirPath, file.Name()), rootPath )
+			err := os.Remove( path.Join(dirPath, file.Name()) )
+			if err != nil { fmt.Printf("err: %v\n", err) }
+
+		} else {
+			// move files to root
+			var oldFilePath string = path.Join( dirPath,  file.Name() )
+			var newFilePath string = path.Join( rootPath, file.Name() )
+			os.Rename(oldFilePath, newFilePath)
 		}
 	}
 }

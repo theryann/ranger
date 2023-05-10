@@ -11,7 +11,7 @@ import (
 // renameCmd represents the rename command
 var renameCmd = &cobra.Command{
 	Use:   "rename",
-	Short: "directorify files by renaming them with a number",
+	Short: "order files by renaming them with a number",
 	Long: `The files are renamed to a number that reflects their order.
 This can be done using EXIF or modified time`,
 	Run: func(cmd *cobra.Command, args []string) {
