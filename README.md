@@ -6,7 +6,7 @@
 most importnat thing first:
 use **--help** after any command to get all options and flags.
 
-The following will organize up to the level of months.
+The following will organize your directory up to the level of months.
 You can use **years** and **days** respectively
 ```bash
 $ ranger years
@@ -26,7 +26,7 @@ if you had a directory that looks like this:
     └── 20150630_170123.jpg
     └── 20150714_194224-1.jpg
 ```
-it will turn into this:
+it will turn into this: *(more languages will potentially be added)*
 ```bash
 ├── myDirectory/
     ├───2014
@@ -46,9 +46,9 @@ it will turn into this:
         └── 07-Juli
             └── 20150714_194224-1.jpg
 ```
-the flags **--modtime** and **--exif** will you the last modified time or exif data to retrieve the time. By default ranger searches the filename for dates (**--filename**)
+the flags **--modtime** and **--exif** will use the last modification time or exif data to retrieve the time. By default ranger searches the filename for time information (**--filename**)
 
-Tipp: you can use the different sources in succession
+Tipp: you can use the different sources in succession for the best results if you have different types of files
 ```bash
 $ ranger days
 $ ranger days --modtime
@@ -62,8 +62,6 @@ $ ranger compile
 this will scan all subdirectories and move all files to the directory from where you ran the command. It will also delete all the folders (they are empty anyway now, no worrys)
 
 ## Install
-
-clone the repository
 
 ```bash
 $ git clone https://github.com/theryann/ranger.git
