@@ -182,6 +182,14 @@ func find(dirPath string, subject Subject, name string) {
 
 	for _, file := range files {
 		if file.IsDir() {
+			var fileLower string = strings.ToLower( file.Name() )
+			var nameLower string = strings.ToLower( name )
+
+			// test if topic occurs in directory name
+			if strings.Contains( fileLower, nameLower ) {
+				fmt.Println(file.Name())
+			}
+
 			// search subdirectories
 			find( path.Join(dirPath, file.Name()), subject, name )
 
