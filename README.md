@@ -4,10 +4,10 @@
 ## How to use
 
 most importnat thing first:
-use **--help** after any command to get all options and flags.
+use ```--help``` after any command to get all options and flags.
 
 The following will organize your directory up to the level of months.
-You can use **years** and **days** respectively
+You can use ```years``` and ```days``` respectively
 ```bash
 $ ranger years
 ```
@@ -46,7 +46,7 @@ it will turn into this: *(more languages will potentially be added)*
         └── 07-Juli
             └── 20150714_194224-1.jpg
 ```
-the flags **--modtime** and **--exif** will use the last modification time or exif data to retrieve the time. By default ranger searches the filename for time information (**--filename**)
+the flags ```--modtime``` and ```--exif``` will use the last modification time or exif data to retrieve the time. By default ranger searches the filename for time information (```--filename```)
 
 Tipp: you can use the different sources in succession for the best results if you have different types of files
 ```bash
