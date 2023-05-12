@@ -9,7 +9,7 @@ use ```--help``` after any command to get all options and flags.
 The following will organize your directory up to the level of months.
 You can use ```years``` and ```days``` respectively
 ```bash
-$ ranger years
+$ ranger months
 ```
 if you had a directory that looks like this:
 
