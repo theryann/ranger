@@ -272,6 +272,7 @@ func typify(media Media) {
 		var extention string = strings.ToLower( path.Ext( file.Name() ) )  // strip point from extention
 		if len(extention) > 0 {
 			extention = extention[1:]
+			if extention == "ini" { continue }  // skip desktop.ini file
 		} else {
 			continue
 		}

@@ -5,6 +5,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 )
 
@@ -22,8 +23,7 @@ Yau can also chain types`,
 		audio, _     := cmd.Flags().GetBool("audio")
 		extention, _ := cmd.Flags().GetBool("extention")
 
-		if len( args ) == 0 || media {
-			typify(All)
+		if media { typify(All)
 		} else if extention { typify(Extention)
 		} else if image     { typify(Pictures)
 		} else if audio     { typify(Music)
@@ -34,7 +34,7 @@ Yau can also chain types`,
 
 func init() {
 	rootCmd.AddCommand(typeCmd)
-	typeCmd.PersistentFlags().BoolP("media",  "m" , true, "by file all media formats")
+	typeCmd.PersistentFlags().BoolP("media",  "m" , false, "by all media formats")
 	typeCmd.PersistentFlags().BoolP("image",  "i" , false, "image formates")
 	typeCmd.PersistentFlags().BoolP("video",  "v" , false, "video formates")
 	typeCmd.PersistentFlags().BoolP("audio",  "a" , false, "audio formates")
