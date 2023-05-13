@@ -33,9 +33,23 @@ const (
 	Name
 )
 
+type Media int
+const (
+	All  Media = iota
+	Extention
+	Videos
+	Music
+	Pictures
+)
+
 var datePattern *regexp.Regexp = regexp.MustCompile("(200[0-9]|20[1-4][0-9]|2050)[-]?(0[1-9]|1[0-2])[-]?(0[1-9]|[12][0-9]|3[01])")
 var monthsNames = [12] string {"Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"}
 
+var mediaFormats = map[string][]string {
+	"image" : {"jpg", "jpeg","png", "tiff", "webp", "gif", "heic", "raw"},
+	"video" : {"mp4", "mpeg", "avi", "mkv", "webm", "flv", "wmv", "asf", "m4v", "m2v", "3gp" },
+	"music" : {"wav", "m4a", "aac", "pcm", "wma", "mp3", "ogg", "flac"},
+}
 
 func organizeByDate(detail Detail, source Source) {
 	cwd, _ := os.Getwd() // get CWD
@@ -172,7 +186,6 @@ func organizeByTopic(topics []string) {
 
 func rename(source Source) {
 	// TODO
-
 }
 
 func find(dirPath string, subject Subject, name string) {
@@ -227,7 +240,6 @@ func find(dirPath string, subject Subject, name string) {
 	}
 }
 
-
 func compile(dirPath string, rootPath string) {
 	files, err := os.ReadDir( dirPath )
 
@@ -246,5 +258,106 @@ func compile(dirPath string, rootPath string) {
 			var newFilePath string = path.Join( rootPath, file.Name() )
 			os.Rename(oldFilePath, newFilePath)
 		}
+	}
+}
+
+func typify(media Media) {
+	cwd, _ := os.Getwd() // get CWD
+	files, err := os.ReadDir( cwd )
+	if err != nil { fmt.Println("Error while reading directory:", err) }
+
+	for _, file := range files {
+		if file.IsDir() { continue }
+
+		var extention string = strings.ToLower( path.Ext( file.Name() ) )  // strip point from extention
+		if len(extention) > 0 {
+			extention = extention[1:]
+		} else {
+			continue
+		}
+
+		var formatIdentified bool = false
+		var newFilePath string
+
+
+		switch media {
+			case All:
+				// check all media formats
+				for mediaType, formats := range mediaFormats {
+					if formatIdentified { break }
+					for _, format := range formats {
+						if format != extention {
+							continue
+						}
+						// create media directory
+						_, err := os.Stat( path.Join(cwd, mediaType) )
+						if os.IsNotExist( err ) {
+							os.Mkdir( path.Join(cwd, mediaType), 0755)
+						}
+						newFilePath = path.Join(cwd, mediaType, file.Name())
+						formatIdentified = true
+						break
+					}
+				}
+			case Extention:
+				// create extention directory
+				_, err := os.Stat( path.Join(cwd, extention) )
+				if os.IsNotExist( err ) {
+					os.Mkdir( path.Join(cwd, extention), 0755)
+				}
+				newFilePath = path.Join(cwd, extention, file.Name())
+				formatIdentified = true
+				break
+			case Pictures:
+				for _, format := range mediaFormats["image"] {
+					if format != extention {
+						continue
+					}
+					// create media directory
+					_, err := os.Stat( path.Join(cwd, "images") )
+					if os.IsNotExist( err ) {
+						os.Mkdir( path.Join(cwd, "images"), 0755)
+					}
+					newFilePath = path.Join(cwd, "images", file.Name())
+					formatIdentified = true
+					break
+				}
+			case Music:
+				for _, format := range mediaFormats["music"] {
+					if format != extention {
+						continue
+					}
+					// create media directory
+					_, err := os.Stat( path.Join(cwd, "audio") )
+					if os.IsNotExist( err ) {
+						os.Mkdir( path.Join(cwd, "audio"), 0755)
+					}
+					newFilePath = path.Join(cwd, "audio", file.Name())
+					formatIdentified = true
+					break
+				}
+			case Videos:
+				for _, format := range mediaFormats["video"] {
+					if format != extention {
+						continue
+					}
+					// create media directory
+					_, err := os.Stat( path.Join(cwd, "video") )
+					if os.IsNotExist( err ) {
+						os.Mkdir( path.Join(cwd, "video"), 0755)
+					}
+					newFilePath = path.Join(cwd, "video", file.Name())
+					formatIdentified = true
+					break
+				}
+
+		}
+
+		// in case any container has been found move file
+		if formatIdentified {
+			var oldFilePath string = path.Join(cwd, file.Name())
+			os.Rename(oldFilePath, newFilePath)
+		}
+
 	}
 }
